@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-hant">
+<head>
+	<meta charset="UTF-8">
+	<title>video</title>
+	<style>
+	#all{
+        border: 3px dashed steelblue;
+        border-radius: 10px;
+        width: 800px;
+        text-align: center;
+        margin: 50px auto;
+        padding: 15px 0px;
+    }
+    .container{
+        /* border: 1px solid red; */
+        margin-top: 10px;
+    }
+    button{
+        text-transform: capitalize;
+        width: 120px;
+    }
+    #defaultBar{
+        border: 1px solid #777;
+        border-radius: 3px;
+        width: 735px;
+        height: 18px;
+        margin-top: 10px;
+        padding: 2px;
+        margin: 10px auto 0 auto;
+        /* position: relative; */
+        /* left: 39px; */
+    }
+    #progress{
+        width: 0px;
+        height: 18px;
+        background: #ccc;
+    }
+	</style>
+</head>
+<body>
+	<div id="all">
+        <video id="myMovie" width="640">
+            <source src="./你坐車車哦.mp4">
+        </video>
+        <div class="container">
+            <div id="buttons">
+                <button id="playButton">play</button>
+                <button id="stopButton">Stop</button>
+                <button id="upButton">volume Up</button>
+                <button id="downButton">Volume down</button>
+                <button id="mutedButton">muted</button>
+                <button id="fullButton">full</button>
+            </div>
+            <div id="defaultBar">
+                <div id="progress"></div>
+            </div>
+        </div>
+    </div> 
+    <p style="text-align: center">也可使用空白鍵(開始/暫停)</p>
+</body>
+<script>
+
+function video_run(){
+    let myMovie = document.getElementById('myMovie');
+    let playButton = document.getElementById('playButton');
+    let fullButton = document.getElementById('fullButton');
+    let mutedButton = document.getElementById('mutedButton');
+    let defaultBar = document.getElementById('defaultBar');
+    let progress = document.getElementById('progress');
+    let upvolume = document.getElementById('upButton');
+    let downvolume = document.getElementById('downButton');
+    let btnstop = document.getElementById('stopButton');
+    let container = document.getElementById('all');
+    
+    // console.log(window.getComputedStyle(defaultBar).width)
+    // console.log(parseInt(window.getComputedStyle(defaultBar).width))
+    
+
+    playButton.addEventListener('click', playOrPause);
+    fullButton.addEventListener('click', fullScreen);
+    defaultBar.addEventListener('click', clickedBar);
+    mutedButton.addEventListener('click', muteOrUnmuted);
+    upvolume.addEventListener('click', upvoice);
+    downvolume.addEventListener('click', downvoice);
+    btnstop.addEventListener('click', stopbtn);
+    myMovie.addEventListener('click',click_playOrPause)
+    function space_playOrPause(e){
+        if(e.keyCode == 32){
+            if(myMovie.paused){
+                myMovie.play();
+                setInterval(update, 300);
+                playButton.innerText = 'pause';
+            }else{
+                myMovie.pause();
+                playButton.innerText = 'play';
+            }
+        }
+    }
+    window.addEventListener('keydown',space_playOrPause);
+}
+
+function playOrPause(){
+    if(!myMovie.paused && !myMovie.ended){  //影片正在跑
+        myMovie.pause();
+        playButton.innerText = 'play';
+    }else{
+        myMovie.play();
+        playButton.innerText = 'pause';
+        setInterval(update, 300);
+    }
+}
+
+let barsize = parseInt(window.getComputedStyle(defaultBar).width)
+// console.log(barsize)
+
+function update(){
+    if(!myMovie.ended){
+        let size = barsize / myMovie.duration * myMovie.currentTime;
+        progress.style.width = `${size}px`;
+        // console.log(myMovie.duration)
+        // console.log(myMovie.currentTime)
+        // console.log(size)
+    }else{
+        progress.style.width = `0px`;
+        playButton.innerText = 'play';
+        myMovie.currentTime = 0;
+    }
+}
+function fullScreen(){
+    myMovie.webkitEnterFullScreen();
+}
+
+function clickedBar(e){
+    let mouseX = e.pageX - defaultBar.offsetLeft;
+    progress.style.width = `${mouseX}px`;
+    console.log(e.pageX)
+    // console.log(defaultBar.offsetLeft)
+    console.log(mouseX)
+    let newTime = mouseX / (barsize / myMovie.duration);
+    myMovie.currentTime = newTime;
+}
+
+function muteOrUnmuted(){
+    if(myMovie.volume != 0){
+        myMovie.volume = 0;
+        mutedButton.innerText = 'unmuted';
+    }else{
+        myMovie.volume = 0.5;
+        mutedButton.innerText = 'muted';
+    }
+    
+}
+
+function upvoice(){
+    if(myMovie.volume <= 0.9){
+        myMovie.volume = myMovie.volume + 0.1;
+    }
+};
+
+function downvoice(){
+    if(myMovie.volume >= 0.1){
+        myMovie.volume = myMovie.volume - 0.1;
+    }
+}
+
+function stopbtn(){
+    myMovie.load();
+}
+
+function click_playOrPause(){
+    if(!myMovie.paused && !myMovie.ended){  //影片正在跑
+        myMovie.pause();
+        playButton.innerText = 'play';
+    }else{
+        myMovie.play();
+        playButton.innerText = 'pause';
+        setInterval(update, 300);
+    }
+    // console.log('haha')
+}
+
+window.addEventListener('load',video_run);
+</script>
+</html>

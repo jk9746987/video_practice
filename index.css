@@ -1,0 +1,31 @@
+.shopping_container{
+    width: 600px;
+    height: 500px;
+    display: grid;
+    grid-template-columns: 200px 300px;
+    column-gap: 50px;
+}
+
+.shopping_container img{
+    width: 200px;
+}
+
+.container_txt .product_number{
+    display: flex;
+    width: 150px;
+    justify-content: space-around;
+}
+
+.container_txt .product_number .formula{
+    display: flex;
+    justify-content: space-around;
+    width: 80px;
+}
+
+.formula .plus{
+    cursor: pointer;
+}
+
+.formula .less{
+    cursor: pointer;
+}
